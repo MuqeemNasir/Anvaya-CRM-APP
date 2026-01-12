@@ -358,10 +358,10 @@ const LeadList = () => {
                     </div>
                     <div className="col-md-4">
                       <label className="form-label small fw-bold text-muted text-uppercase">
-                        Days to Close
+                        Tags
                       </label>
                       <input
-                        type="number"
+                        type="text"
                         className="form-control"
                         placeholder="Tag1, Tag2"
                         value={formData.tags}
