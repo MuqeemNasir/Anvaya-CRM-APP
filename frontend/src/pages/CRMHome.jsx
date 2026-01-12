@@ -4,7 +4,7 @@ import { getLeads } from "../services/lead.api"
 import { ChevronRight, LayoutDashboard, Plus, SettingsIcon, User } from "lucide-react"
 import { Link } from "react-router-dom"
 
-const Dashboard = () => {
+const CRMHome = () => {
   const { agents } = useDataContext()
   const [leads, setLeads] = useState([])
   const [loading, setLoading] = useState(true)
@@ -152,4 +152,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default CRMHome

@@ -9,7 +9,7 @@ import AgentList from "./pages/AgentList";
 import LeadList from "./pages/LeadList";
 import LeadDetails from "./pages/LeadDetails";
 import Reports from "./pages/Reports";
-import Dashboard from "./pages/DashBoard";
+import CRMHome from "./pages/CRMHome"
 import LeadStatusView from "./pages/LeadStatusView";
 import SalesAgentView from "./pages/SalesAgentView";
 import Settings from "./pages/Settings";
@@ -37,7 +37,7 @@ function App() {
             <main className="p-3 p-md-4">
               <div className="container-fluid">
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/" element={<CRMHome />} />
                   <Route path="/leads" element={<LeadList />} />
                   <Route path="/leads/:id" element={<LeadDetails />} />
                   <Route path="/agents" element={<AgentList />} />
