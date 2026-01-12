@@ -1,0 +1,24 @@
+# Ignore node_modules (dependencies)
+node_modules/
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Ignore environment files (secrets, configs)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore build/coverage
+dist/
+build/
+coverage/
