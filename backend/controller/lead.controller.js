@@ -11,6 +11,11 @@ const createLead = async (req, res) => {
             return res.status(404).json({ error: `Sales agent with ID ${salesAgent} not found.` })
         }
 
+        const newLeadData = { name, source, salesAgent, status, timeToClose, priority, tags }
+        if(status === 'Closed'){
+            newLeadData.closedAt = new Date()
+        }
+
         const newLead = new Lead({ name, source, salesAgent, status, timeToClose, priority, tags })
         const savedLead = await newLead.save()
 
