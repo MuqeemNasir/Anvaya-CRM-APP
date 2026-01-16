@@ -3,7 +3,7 @@ import { useDataContext } from "../context/DataContext"
 import { useEffect, useState } from "react"
 import { getLeadById, updateLead } from "../services/lead.api"
 import { addComment, getCommentByLead } from "../services/comment.api"
-import { Clock, Edit2, MessageSquare, Send } from "lucide-react"
+import { AlertCircle, CheckCircle, Clock, Edit2, MessageSquare, Send } from "lucide-react"
 
 const LeadDetails = () => {
     const {id} = useParams()
@@ -15,7 +15,10 @@ const LeadDetails = () => {
 
     const [isEditing, setIsEditing] = useState(false)
     const [newComment, setNewComment] = useState("")
+    const [selectedAuthor, setSelectedAuthor] = useState("")
     const [commentLoading, setCommentLoading] = useState(false)
+
+    const [alert, setAlert] = useState({type: '', msg: ''})
 
     useEffect(() => {
         fetchData()
@@ -28,35 +31,49 @@ const LeadDetails = () => {
             const commentData = await getCommentByLead(id)
             setLead(leadData)
             setComments(commentData)
+            if(leadData.salesAgent?._id) setSelectedAuthor(leadData.salesAgent._id)
         }catch(error){
-            console.error(error)
+            showAlert('danger', 'Failed to load details')
         }finally{
             setLoading(false)
         }
     }
 
+    const showAlert = (type, msg) => {
+        setAlert({type, msg})
+        setTimeout(() => setAlert({type: '', msg: ''}), 4000)
+    }
+
     const handleUpdateLead = async (e) => {
         e.preventDefault()
         try{
+            const sanitizedLead = {
+                ...lead,
+                salesAgent: lead.salesAgent?.id || lead.salesAgent
+            }
             const updated = await updateLead(id, lead)
             setLead(updated)
             setIsEditing(false)
+            showAlert('success', 'Lead updated successfully!')
         }catch(error){
-            alert("Update failed.")
+            showAlert('danger', "Update failed. Check all required fields.")
         }
     }
 
     const handleAddComment = async (e) => {
         e.preventDefault()
-        if(!newComment.trim()) return
+        if(!newComment.trim() || !selectedAuthor){
+            return showAlert('warning', "Please enter your comment and select an author.")
+        }
         setCommentLoading(true)
         
         try{
-            const savedComment = await addComment(id, newComment)
+            const savedComment = await addComment(id, newComment, selectedAuthor)
             setComments([savedComment, ...comments])
             setNewComment("")
+            showAlert('success', "Comment added")
         }catch(error){
-            alert("Failed to add comment")
+            showAlert('danger', "Failed to add comment")
         }finally{
             setCommentLoading(false)
         }
@@ -70,13 +87,20 @@ const LeadDetails = () => {
 
     return(
         <div className="container-fluid px-2 px-md-4 py-4 animate-fade-in">
+            {alert.msg && (
+                <div className={`alert alert-${alert.type} shadow-sm d-flex align-items-center gap-2 mb-4 sticky-top`}>
+                    {alert.type === 'success' ? <CheckCircle size={18} /> : 
+                    <AlertCircle size={18} /> }
+                    {alert.msg}
+                </div>
+            )}
             <div className="row g-4">
                 <div className="col-12 col-lg-5">
                     <div className="card shadow-sm border-0 h-100">
                         <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                            <h5 className="fw-bold mb-0">Lead Details</h5>
+                            <h5 className="fw-bold mb-0 text-dark">Lead Details</h5>
                             <button className={`btn btn-sm ${isEditing ? 'btn-outline-danger' : 'btn-outline-primary'}`} onClick={() => setIsEditing(!isEditing)}>
-                                {isEditing ? "Cancel" : <><Edit2 size={14} />Edit</>}
+                                {isEditing ? "Cancel" : <><Edit2 size={14} className="me-1" />Edit</>}
                             </button>
                         </div>
                         <div className="card-body">
@@ -90,7 +114,8 @@ const LeadDetails = () => {
                                     </div>
                                     <div className="col-12">
                                         <label className="small fw-bold text-muted">Sales Agent</label>
-                                        <select className="form-select border-2" value={lead.salesAgent?._id || ""} onChange={(e) => setLead({...lead, salesAgent: agents.find(a => a._id === e.target.value)})}>
+                                        <select className="form-select border-2" value={lead.salesAgent?._id || lead.salesAgent || ""} onChange={(e) => setLead({...lead, salesAgent:  e.target.value})}>
+                                            <option value="">Select Agent</option>
                                             {agents.map(a => <option key={a._id} value={a._id}>{a.name}</option> )}
                                         </select>
                                     </div>
@@ -112,27 +137,27 @@ const LeadDetails = () => {
                                 </form>
                             ) : (
                                 <div className="list-group list-group-flush border-0">
-                                    <div className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Lead Name</span>
-                                        <span className="fw-bold text-primary">{lead.name}</span>
+                                        <span className="fw-bold text-dark">{lead.name}</span>
                                     </div>
-                                    <div className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Sales Agent</span>
                                         <span className="fw-bold text-primary">{lead.salesAgent?.name || "Unassigned"}</span>
                                     </div>
-                                    <div className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Lead Source</span>
-                                        <span className="badge bg-light text-dark border">{lead.source}</span>
+                                        <span className={`badge ${lead.status === 'Closed' ? 'bg-success' : 'bg-info'} px-3`}>{lead.source}</span>
                                     </div>
-                                    <div className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Lead Status</span>
                                         <span className={`badge ${lead.status === 'Closed' ? 'bg-success' : 'bg-info'} px-3`}>{lead.status}</span>
                                     </div>
-                                    <div className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Priority</span>
                                         <span className={`fw-bold ${lead.priority === 'High' ? 'text-danger' : 'bg-muted'}`}>{lead.priority}</span>
                                     </div>
-                                    <div className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Time to close</span>
                                         <span className="text-dark"><Clock size={14} className="me-1" /> {lead.timeToClose} Days</span>
                                     </div>
@@ -150,11 +175,18 @@ const LeadDetails = () => {
 
                 <div className="col-12 col-lg-7">
                     <div className="card shadow-sm border-0 h-100">
-                        <div className="card-header bg-white py-3 border-bottom">
+                        <div className="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                             <h5 className="fw-bold mb-0 d-flex align-items-center gap-2">
                                 <MessageSquare size={20} className="text-primary" />
                                 Comments Section
                             </h5>
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="small text-muted fw-bold">BY:</span>
+                                <select className="form-select form-select-sm border-primary" style={{width: '150px'}} value={selectedAuthor} onChange={(e) => setSelectedAuthor(e.target.value)}>
+                                    <option value="">Select Author</option>
+                                    {agents.map(a => <option key={a._id} value={a._id}>{a.name}</option> )}
+                                </select>
+                            </div>
                         </div>
                         <div className="card-body bg-light-subtle d-flex flex-column">
                             <form onSubmit={handleAddComment} className="mb-4">
@@ -173,15 +205,15 @@ const LeadDetails = () => {
                                 </div>
                             </form>
 
-                            <div className="overflow-auto" style={{maxHeight: '450px'}}>
+                            <div className="overflow-auto" style={{maxHeight: '500px'}}>
                                 {comments.length === 0 ? (
                                     <div className="text-center py-5 text-muted">No interactions documented yet.</div>
                                 ) : (
                                     comments.map((comment) => (
                                         <div key={comment.id} className="bg-white p-3 rounded shadow-sm border mb-3 border-start border-4 border-start-primary">
-                                            <div className="d-flex justify-content-between align-items-start mb-2">
+                                            <div className="d-flex justify-content-between mb-1">
                                                 <span className="fw-bold text-dark small">{comment.author}</span>
-                                                <span className="text-muted x-small" style={{fontSize: '0.75rem'}}>
+                                                <span className="text-muted" style={{fontSize: '0.7rem'}}>
                                                     {new Date(comment.createdAt).toLocaleString([], {dateStyle: 'short', timeStyle: 'short'})}
                                                 </span>
                                             </div>

@@ -22,19 +22,19 @@ function App() {
   return (
     <DataProvider>
       <Router>
-        <div className="d-flex">
+        <div className="d-flex overflow-hidden" style={{maxWidth: '100vw'}}>
           <Sidebar isOpen={isMobileSidebarOpen} toggleSidebar={toggleSidebar} />
-          <div className="flex-grow-1 min-vh-100 bg-light">
-            <header className="d-md-none bg-white shadow-sm p-3 d-flex align-items-center justify-content-between">
+          <div className="flex-grow-1 min-vh-100 bg-light d-flex flex-column" style={{minWidth: 0}}>
+            <header className="d-md-none bg-white shadow-sm p-3 d-flex align-items-center justify-content-between w-100">
               <h1 className="h5 mb-0 fw-bold text-primary">Anvaya</h1>
               <button
-                className="btn btn-outline-primary btn-sm"
+                className="btn btn-outline-primary btn-sm border-0"
                 onClick={toggleSidebar}
               >
-                <Menu size={20} />
+                <Menu size={24} />
               </button>
             </header>
-            <main className="p-3 p-md-4">
+            <main className="p-2 p-md-4 flex-grow-1">
               <div className="container-fluid">
                 <Routes>
                   <Route path="/" element={<CRMHome />} />

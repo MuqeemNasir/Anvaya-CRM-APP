@@ -10,9 +10,9 @@ export const getCommentByLead = async (leadId) => {
     }
 }
 
-export const addComment = async (leadId, commentText) => {
+export const addComment = async (leadId, commentText, authorId) => {
     try {
-        const res = await API.post(`/leads/${leadId}/comments`, { commentText })
+        const res = await API.post(`/leads/${leadId}/comments`, { commentText, authorId })
         return res.data
     }catch(error){
         console.error("addComment error: ", error)
