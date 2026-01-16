@@ -41,17 +41,24 @@ const LeadDetails = () => {
 
     const showAlert = (type, msg) => {
         setAlert({type, msg})
+        window.scrollTo(0, 0)
         setTimeout(() => setAlert({type: '', msg: ''}), 4000)
     }
 
     const handleUpdateLead = async (e) => {
         e.preventDefault()
         try{
-            const sanitizedLead = {
-                ...lead,
-                salesAgent: lead.salesAgent?.id || lead.salesAgent
+            const updateData = {
+                name: lead.name,
+                status: lead.status,
+                priority: lead.priority,
+                source: lead.source,
+                timeToClose: Number(lead.timeToClose),
+                tags: lead.tags,
+
+                salesAgent: lead.salesAgent?._id || lead.salesAgent                 
             }
-            const updated = await updateLead(id, lead)
+            const updated = await updateLead(id, updateData)
             setLead(updated)
             setIsEditing(false)
             showAlert('success', 'Lead updated successfully!')
@@ -90,8 +97,8 @@ const LeadDetails = () => {
             {alert.msg && (
                 <div className={`alert alert-${alert.type} shadow-sm d-flex align-items-center gap-2 mb-4 sticky-top`}>
                     {alert.type === 'success' ? <CheckCircle size={18} /> : 
-                    <AlertCircle size={18} /> }
-                    {alert.msg}
+                    <AlertCircle size={20} /> }
+                    <span className="fw-bold">{alert.msg}</span>
                 </div>
             )}
             <div className="row g-4">
@@ -132,7 +139,7 @@ const LeadDetails = () => {
                                         <input type="number" className="form-control border-2" value={lead.timeToClose} onChange={(e) => setLead({...lead, timeToClose: e.target.value})} />
                                     </div>
                                     <div className="col-12 mt-4">
-                                        <button type="submit" className="btn btn-primary w-100 fw-bold shadow-sm">Save Changes</button>
+                                        <button type="submit" className="btn btn-primary w-100 fw-bold py-2">Save Changes</button>
                                     </div>
                                 </form>
                             ) : (
@@ -155,7 +162,7 @@ const LeadDetails = () => {
                                     </div>
                                     <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Priority</span>
-                                        <span className={`fw-bold ${lead.priority === 'High' ? 'text-danger' : 'bg-muted'}`}>{lead.priority}</span>
+                                        <span className={`fw-bold ${lead.priority === 'High' ? 'text-danger' : 'text-muted'}`}>{lead.priority}</span>
                                     </div>
                                     <div className="list-group-item d-flex justify-content-between py-3">
                                         <span className="text-muted small fw-bold text-uppercase">Time to close</span>
@@ -182,7 +189,7 @@ const LeadDetails = () => {
                             </h5>
                             <div className="d-flex align-items-center gap-2">
                                 <span className="small text-muted fw-bold">BY:</span>
-                                <select className="form-select form-select-sm border-primary" style={{width: '150px'}} value={selectedAuthor} onChange={(e) => setSelectedAuthor(e.target.value)}>
+                                <select className="form-select form-select-sm border-primary" style={{width: '160px'}} value={selectedAuthor} onChange={(e) => setSelectedAuthor(e.target.value)}>
                                     <option value="">Select Author</option>
                                     {agents.map(a => <option key={a._id} value={a._id}>{a.name}</option> )}
                                 </select>
