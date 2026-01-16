@@ -5,17 +5,17 @@ const Lead = require('../models/Lead.model')
 const addComment = async (req, res) => {
     try {
         const { id } = req.params
-        const { commentText } = req.body
+        const { commentText, authorId } = req.body
 
         const lead = await Lead.findById(id)
         if(!lead){
-            return res.status(404).json({error: `Lead with ID '${id}' not found.`})
+            return res.status(404).json({error: `Lead not found.`})
         }
 
         const newComment = new Comment({
             lead: id,
             commentText: commentText,
-            author: lead.salesAgent
+            author: authorId
         })
 
         const savedComment = await newComment.save()
@@ -24,7 +24,7 @@ const addComment = async (req, res) => {
         res.status(201).json({
             id: response._id,
             commentText: response.commentText,
-            author: response.author ? response.author.name : "System",
+            author: response.author?.name || "System",
             createdAt: response.createdAt
         })
     } catch (error) {
