@@ -56,8 +56,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <div
-        className="d-none d-md-flex flex-column bg-dark text-white p-3 position-sticky top-0"
-        style={{ width: "260px", height: "100vh", minHeight: "100vh" }}
+        className="d-none d-md-flex flex-column bg-dark text-white p-3 position-fixed top-0 start-0 vh-100 shadow"
+        style={{ width: "260px", zIndex: 1000 }}
       >
         <h2 className="h4 mb-4 text-primary fw-bold px-2">Anvaya CRM</h2>
         <NavigationLinks />
@@ -70,10 +70,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         style={{
           visibility: isOpen ? "visible" : "hidden",
           transition: "transform 0.3s ease-in-out",
-          zIndex: 1050,
+          zIndex: 1100,
         }}
       >
-        <div className="offcanvas-header d-flex justify-content-between align-items-center w-100">
+        <div className="offcanvas-header border-bottom border-secondary d-flex justify-content-between align-items-center w-100">
           <h5 className="offcanvas-title text-primary fw-bold">Anvaya CRM</h5>
           <button
             type="button"
@@ -81,7 +81,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             onClick={toggleSidebar}
             aria-label="Close"
           >
-            <X />
+            <X size={28}/>
           </button>
         </div>
         <div className="offcanvas-body">

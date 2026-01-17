@@ -22,9 +22,9 @@ function App() {
   return (
     <DataProvider>
       <Router>
-        <div className="d-flex overflow-hidden">
+        <div className="d-flex overflow-hidden bg-light min-vh-100">
           <Sidebar isOpen={isMobileSidebarOpen} toggleSidebar={toggleSidebar} />
-          <div className="flex-grow-1 bg-light d-flex flex-column shadow-sm">
+          <div className="flex-grow-1 d-flex flex-column shadow-sm" style={{marginLeft: "0px"}}>
             <header className="d-md-none bg-white shadow-sm p-3 d-flex align-items-center justify-content-between w-100">
               <h1 className="h5 mb-0 fw-bold text-primary">Anvaya</h1>
               <button
