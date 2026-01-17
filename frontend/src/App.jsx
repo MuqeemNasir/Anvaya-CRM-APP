@@ -22,10 +22,10 @@ function App() {
   return (
     <DataProvider>
       <Router>
-        <div className="d-flex overflow-hidden bg-light min-vh-100">
+        <div className="d-flex bg-light min-vh-100">
           <Sidebar isOpen={isMobileSidebarOpen} toggleSidebar={toggleSidebar} />
-          <div className="flex-grow-1 d-flex flex-column shadow-sm" style={{marginLeft: "0px"}}>
-            <header className="d-md-none bg-white shadow-sm p-3 d-flex align-items-center justify-content-between w-100">
+          <div className="flex-grow-1 d-flex flex-column " style={{marginLeft: window.innerWidth > 768 ? "260px" : "0px", minWidth: 0}}>
+            <header className="d-md-none bg-white shadow-sm p-3 d-flex align-items-center justify-content-between sticky-top w-100">
               <h1 className="h5 mb-0 fw-bold text-primary">Anvaya</h1>
               <button
                 className="btn btn-outline-primary btn-sm border-0"
@@ -35,7 +35,7 @@ function App() {
               </button>
             </header>
             <main className="p-2 p-md-4 flex-grow-1">
-              <div className="container-fluid">
+              <div className="container-fluid overflow-hidden">
                 <Routes>
                   <Route path="/" element={<CRMHome />} />
                   <Route path="/leads" element={<LeadList />} />

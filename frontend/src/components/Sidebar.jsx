@@ -71,9 +71,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           visibility: isOpen ? "visible" : "hidden",
           transition: "transform 0.3s ease-in-out",
           zIndex: 1100,
+          width: "280px"
         }}
       >
-        <div className="offcanvas-header border-bottom border-secondary d-flex justify-content-between align-items-center w-100">
+        <div className="offcanvas-header border-bottom border-secondary">
           <h5 className="offcanvas-title text-primary fw-bold">Anvaya CRM</h5>
           <button
             type="button"
@@ -90,14 +91,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </div>
       {isOpen && (
         <div
-          className={`offcanvas offcanvas-start bg-dark text-white ${isOpen ? "show" : ""}`}
-          tabIndex="-1"
+          className="modal-backdrop fade show d-md-none"
           onClick={toggleSidebar}
-          style={{
-            visibility: isOpen ? "visible" : "hidden",
-            transition: "transform 0.3s ease-in-out",
-            zIndex: 1100,
-          }}
+          style={{zIndex: 1050}}
         ></div>
       )}
     </>
