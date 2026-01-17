@@ -23,27 +23,41 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     <ul className="nav nav-pills flex-column mb-auto">
       {isHome ? (
         navItems.map((item) => (
-          <li key={item.path} className="nav-item mb-2" onClick={isOpen ? toggleSidebar : null }>
-            <Link to={item.path} className={`nav-link text-white d-flex align-items-center gap-2 ${location.pathname === item.path ? "active bg-primary" : "hover-opacity"}`}>
+          <li
+            key={item.path}
+            className="nav-item mb-2"
+            onClick={isOpen ? toggleSidebar : null}
+          >
+            <Link
+              to={item.path}
+              className={`nav-link text-white d-flex align-items-center gap-2 ${
+                location.pathname === item.path
+                  ? "active bg-primary"
+                  : "hover-opacity"
+              }`}
+            >
               {item.icon} {item.name}
             </Link>
           </li>
         ))
       ) : (
         <li className="nav-item" onClick={isOpen ? toggleSidebar : null}>
-          <Link to="/" className="nav-link text-primary d-flex align-items-center gap-2 fw-bold border border-primary py-2">
+          <Link
+            to="/"
+            className="nav-link text-primary d-flex align-items-center gap-2 fw-bold border border-primary py-2"
+          >
             <ChevronLeft size={20} /> Back to Dashboard
           </Link>
         </li>
       )}
     </ul>
-  )
+  );
 
   return (
     <>
       <div
-        className="d-none d-md-flex flex-column bg-dark text-white vh-100 p-3 position-sticky top-0"
-        style={{ width: "260px" }}
+        className="d-none d-md-flex flex-column bg-dark text-white p-3 position-sticky top-0"
+        style={{ width: "260px", height: "100vh", minHeight: "100vh" }}
       >
         <h2 className="h4 mb-4 text-primary fw-bold px-2">Anvaya CRM</h2>
         <NavigationLinks />
@@ -56,7 +70,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         style={{
           visibility: isOpen ? "visible" : "hidden",
           transition: "transform 0.3s ease-in-out",
-          zIndex: 1050
+          zIndex: 1050,
         }}
       >
         <div className="offcanvas-header d-flex justify-content-between align-items-center w-100">
@@ -74,12 +88,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <NavigationLinks />
         </div>
       </div>
-        {isOpen && 
-          <div
-            className="modal-backdrop fade show d-md-none"
-            onClick={toggleSidebar} style={{zIndex: 1040}}
-          ></div>
-        }
+      {isOpen && (
+        <div
+          className={`offcanvas offcanvas-start bg-dark text-white ${isOpen ? "show" : ""}`}
+          tabIndex="-1"
+          onClick={toggleSidebar}
+          style={{
+            visibility: isOpen ? "visible" : "hidden",
+            transition: "transform 0.3s ease-in-out",
+            zIndex: 1100,
+          }}
+        ></div>
+      )}
     </>
   );
 };
